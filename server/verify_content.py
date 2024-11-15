@@ -10,10 +10,10 @@ load_dotenv()
 
 def verify_content_handler(request):
     
-    submitted_image_file = request.form.get('submitted_image')  # 'submitted_image' is the field name in form-data
-    verification_image_file = request.form.get('verification_image')  # 'verification_image' is the field name
-    submitted_text = request.form.get('submitted_text')  # 'submitted_text' field
-    verification_text = request.form.get('verification_text')  # 'verification_text' field
+    submitted_image_file = request.form.get('submitted_image')  
+    verification_image_file = request.form.get('verification_image')  
+    submitted_text = request.form.get('submitted_text')                         
+    verification_text = request.form.get('verification_text')
     
     if not all([submitted_image_file, verification_image_file, submitted_text, verification_text]):
         return jsonify({"error": "All fields are required: 'submitted_image', 'verification_image', 'submitted_text', 'verification_text'"}), 400
