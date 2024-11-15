@@ -34,7 +34,7 @@ const AppAside = () => {
         }
     ];
     return (
-        <div className={'space-y-1 flex flex-col items-start'}>
+        <div className={'gap-y-1 overflow-x-scroll flex md:flex-col items-start'}>
             {
                 links.map((link, index) => {
                     return (

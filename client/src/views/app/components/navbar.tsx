@@ -9,7 +9,7 @@ import {useLocation} from "react-router-dom";
 import {ROUTES} from "@/constants/routes.tsx";
 
 const AppNavbar = () => {
-    const {API} = React.useContext(AppContext);
+    const {API, components} = React.useContext(AppContext);
     const location = useLocation();
     React.useEffect(() => {
         // check if the current path is in the aside links
@@ -17,6 +17,10 @@ const AppNavbar = () => {
         // if the current path is in the aside links, set the pointer
         if (isPathInAsideLinks) {
             API.components.aside.setPointer(location.pathname);
+        }
+
+        if(!components.category.display){
+            API.components.category.setDisplay(true);
         }
     }, [location.pathname]);
     return (

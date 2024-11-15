@@ -42,7 +42,7 @@ const MyReports = () => {
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci, alias aspernatur, atque
                                 autem consectetur, Adipisci, alias aspernatur, atque autem consectetur.
                             </p>
-                            <div className={'flex items-center flex-wrap gap-x-3 mt-4'}>
+                            <div className={'flex items-center flex-wrap gap-3 mt-4'}>
                                 <img alt={'proof_image'} className={'max-h-[200px] h-auto rounded-3xl'} src={demoImg}/>
                                 <img alt={'proof_image'} className={'max-h-[200px] h-auto rounded-3xl'} src={demoImg}/>
                                 <div className={'flex flex-col'}>

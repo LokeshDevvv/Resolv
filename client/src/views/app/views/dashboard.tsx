@@ -1,5 +1,4 @@
-import {Button, buttonVariants} from "@/components/ui/button.tsx";
-import {cn} from "@/lib/utils.ts";
+import {Button} from "@/components/ui/button.tsx";
 import demoImg from "@/assets/demo.jpeg";
 import {ArrowUpRight} from "lucide-react";
 
@@ -24,7 +23,7 @@ const AppDashboard = () => {
             </div>
             <div className={'mt-4'}>
                 <h1 className={'text-lg font-epilogue font-semibold'}>Instagram’da Bu Sorunu Nasıl Çözeceğim</h1>
-                <div className={'flex items-center flex-wrap gap-x-3 mt-4'}>
+                <div className={'flex items-center flex-wrap gap-3 mt-4'}>
                     <img alt={'proof_image'} className={'max-h-[250px] h-auto rounded-3xl'} src={demoImg}/>
                     <img alt={'proof_image'} className={'max-h-[250px] h-auto rounded-3xl'} src={demoImg}/>
                 </div>
