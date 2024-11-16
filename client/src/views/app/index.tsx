@@ -8,12 +8,13 @@ import {cn} from "@/lib/utils.ts";
 import {useDynamicContext, useIsLoggedIn, useSwitchNetwork} from '@dynamic-labs/sdk-react-core';
 import {ROUTES} from "@/constants/routes.tsx";
 import {getWeb3Provider, getSigner} from '@dynamic-labs/ethers-v6'
-import {sapphireTestnet} from "viem/chains"
+import {sapphireTestnet, scrollSepolia} from "viem/chains"
 import {createPublicClient, createWalletClient, custom, http} from "viem";
 import {OasisContractABI, OasisContractAddress} from "@/constants/oasis-contract.ts";
 import Preloader from "@/components/ui/preloader.tsx";
 import {getIpLocation, stringToBytes32} from "@/views/app/components/apis.ts";
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import NetworkSwitcher from "@/views/app/components/network-switcher.tsx";
 
 const publicClient = createPublicClient({
     chain: sapphireTestnet,
@@ -27,7 +28,7 @@ const [account] = await walletClient.getAddresses()
 
 const App = () => {
     const [view, setView] = React.useState('loading');
-    const [verifing, setVerifing] = React.useState(false);
+    const [verifying, setverifying] = React.useState(false);
     const {components} = React.useContext(AppContext);
     const [transactionHash, setTransactionHash] = React.useState('');
     const switchNetwork = useSwitchNetwork();
@@ -37,6 +38,7 @@ const App = () => {
     const isMounted = React.useRef(false);
     const navigate = useNavigate();
     const isVerificationCheckDone = React.useRef(false);
+    const [currentNetwork, setCurrentNetwork] = React.useState(0);
     React.useEffect(() => {
         if (!isMounted.current) {
             isMounted.current = true;
@@ -62,21 +64,42 @@ const App = () => {
     }
 
     async function checkIsUserVerified() {
-        const data = await publicClient.readContract({
-            address: OasisContractAddress,
-            abi: OasisContractABI,
-            functionName: 'isVerified',
-            args: [primaryWallet?.address]
-        })
-        if (data === true) {
+        if (localStorage.getItem("__verified") && localStorage.getItem("__verified") === primaryWallet?.address) {
+            setCurrentNetwork(scrollSepolia.id)
             setView('content');
-        } else {
-            setView('verify');
+            return;
         }
+        if (localStorage.getItem("__verified")) {
+            localStorage.removeItem("__verified");
+        }
+        switchNetwork({
+            wallet: primaryWallet,
+            network: sapphireTestnet.id
+        }).then(() => {
+            publicClient.readContract({
+                address: OasisContractAddress,
+                abi: OasisContractABI,
+                functionName: 'isVerified',
+                args: [primaryWallet?.address]
+            }).then(data => {
+                console.log(data, primaryWallet?.getNetwork());
+                if (data === true) {
+                    localStorage.setItem("__verified", primaryWallet?.address || "");
+                    switchNetwork({
+                        wallet: primaryWallet,
+                        network: scrollSepolia.id
+                    }).then(() => {
+                        setView('content');
+                    })
+                } else {
+                    setView('verify');
+                }
+            })
+        })
     }
 
     async function startOasisVerification() {
-        setVerifing(true);
+        setverifying(true);
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
                 const {latitude, longitude} = position.coords;
@@ -107,13 +130,14 @@ const App = () => {
             account
         })
         const tx = await walletClient.writeContract(request);
-        setVerifing(false);
+        setverifying(false);
         setView('content');
         utils.toast.success(
             <>You have been successfully verified using <b>Oasis Private Layer</b>.
                 <br/>
                 <span className={'font-semibold'}>View
-                    <a className='text-blue-500 hover:underline' href={`https://explorer.oasis.io/testnet/sapphire/tx/${tx}`}>
+                    <a className='text-blue-500 hover:underline'
+                       href={`https://explorer.oasis.io/testnet/sapphire/tx/${tx}`}>
                         Transaction.
                     </a>
                 </span>
@@ -191,14 +215,15 @@ const App = () => {
                             Please verify yourself first using <span className={'text-[#0300e1] font-black'}>Oasis Private Layer</span>
                         </h1>
                         <div className={'flex justify-end mt-4'}>
-                            <Button disabled={verifing} onClick={startOasisVerification}
+                            <Button disabled={verifying} onClick={startOasisVerification}
                                     className={'bg-[#4A8209] hover:bg-[#2A8209] py-6 rounded-full'} variant={'default'}>
-                                {verifing && "Please wait..." || "Verify Now"}
+                                {verifying && "Please wait..." || "Verify Now"}
                             </Button>
                         </div>
                     </div>
                 </div>
             }
+            <NetworkSwitcher chainID={currentNetwork}/>
         </div>
     );
 };
