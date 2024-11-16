@@ -10,22 +10,61 @@ load_dotenv()
 
 @app.route('/api/submit-content', methods=['POST'])
 def handle_submit_content(request):
-    print("Received payload:", request.json)
-    proof_image = request.json.get('proof_image')  
-    proof_text = request.json.get('proof_text')
+    print("Received payload:", request.form)
+    proof_image = request.form.get('proof_image')  
+    proof_text = request.form.get('proof_text')
 
-    # Prompt for AI model
     prompt = """
-    Check if the image is public property or city property. Check if the image contains a problem or everything is fine. Also check if the given STATEMENT matches the problem in the image. Calculate the relevancy score between the image and the STATEMENT. "isMatching" is "true" when the "score" is greater than "80%". Return in JSON string following this format.
-    Analyze the following situation and predict the severity of the problem based on the description provided. 
-    If the situation is a severe or urgent problem (e.g., broken infrastructure, safety hazards, major delays), 
-    it should be assigned a high severity score. If the problem is less urgent or involves minor issues 
-    (e.g., minor road problems or typical delays), it should be assigned a lower severity score.
+    Check if the image is public property or city property. Check if the image contains a problem or everything is fine. 
+Also check if the given STATEMENT matches the problem in the image. Calculate the relevancy score between the image and the STATEMENT. 
+"isMatching" is "true" when the "score" is greater than "80%". 
 
-    Return a severity score between **0 to 10**, with **10 being the most severe** and **0 being the least severe**. 
-    The score should reflect the urgency and seriousness of the situation described.
+Analyze the following situation and predict the severity of the problem based on the description provided. 
+If the situation is a severe or urgent problem (e.g., broken infrastructure, safety hazards, major delays), 
+it should be assigned a high severity score. If the problem is less urgent or involves minor issues 
+(e.g., minor road problems or typical delays), it should be assigned a lower severity score.
 
-    OUTPUT FORMAT: {"isMatching": <bool>, "score": <int>, "severity_score": <int>, "reason_severity_score":<str>}
+Additionally, if the severity score is:
+- **Less than 5**: Provide basic tips or suggestions to solve the problem. 
+  - If it's a **medical situation**, provide first aid tips. 
+  - If it's a **general situation**, give practical advice or quick fixes. 
+- **Between 5 and 7**: Categorize the issue as **medium priority** and suggest steps to resolve the issue or notify appropriate authorities.
+- **Above 7**: Categorize the issue as **high priority** and provide immediate actions to take, such as contacting emergency services or relevant professionals.
+
+Example Suggestions:
+- For low severity (medical): "Clean the wound with water and apply a bandage."
+- For low severity (general): "Tighten the loose screw or use temporary tape."
+- For medium severity: "Contact local maintenance or inform the city council."
+- For high severity: "Call emergency services or evacuate the area immediately."
+
+Analyze the following image and statement to assess the nature and severity of the situation. Determine if the image shows an issue and whether the provided statement aligns with the problem depicted. Additionally, categorize the situation into one of the following categories based on the context:
+
+**Categories:**
+1. Public Property Issues (e.g., roads, streetlights, parks)
+2. City Infrastructure (e.g., bridges, public transport, sewage)
+3. Safety Hazards (e.g., electrical issues, unsafe areas)
+4. Environmental Issues (e.g., pollution, deforestation)
+5. Health and Hygiene (e.g., medical emergencies, sanitation)
+6. Emergency Situations (e.g., natural disasters, fire hazards)
+7. Noise and Air Pollution (e.g., loud noises, vehicle emissions)
+8. Medical Situations (e.g., minor injuries, major health concerns)
+9. Priority-Based (Low, Medium, High Priority)
+
+### Additional Instructions:
+- If the severity score is less than **5**, provide general tips or quick fixes to resolve the issue.
+- If the severity score is between **5 and 7**, classify it as **medium priority** and suggest appropriate actions or authorities to contact.
+- If the severity score is greater than **7**, classify it as **high priority** and recommend immediate actions.
+
+### Output Format:
+```json
+{
+    "isMatching": <bool>,
+    "score": <int>, 
+    "severity_score": <int>, 
+    "reason_severity_score": <str>, 
+    "category": <str>, 
+    "suggestions": <str>
+}
     """
 
     # API Configuration
@@ -63,9 +102,16 @@ def handle_submit_content(request):
         
         # Parse the JSON string output
         try:
-            json_string = output.strip('```json\n').strip('```')
-            parsed_dict = json.loads(json_string)
-            return jsonify(parsed_dict)
+            cleaned_output = output.strip('```json\n').strip('```')
+            start_idx = cleaned_output.find('{')
+            end_idx = cleaned_output.rfind('}')
+            if start_idx != -1 and end_idx != -1:
+                json_content = cleaned_output[start_idx:end_idx + 1]
+                parsed_dict = json.loads(json_content)
+                return jsonify(parsed_dict)
+            else:
+                return jsonify({"error": "Failed to extract JSON content from response", "details": cleaned_output}), 500
+
         except json.JSONDecodeError as e:
             return jsonify({"error": "Failed to parse JSON response", "details": str(e), "output": output}), 500
 

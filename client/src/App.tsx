@@ -4,6 +4,7 @@ import {AppRouter} from "@/config/router.tsx";
 import {GlobalContext} from "@/contexts/global-context.tsx";
 import {DynamicUserProfile, useDynamicContext} from "@dynamic-labs/sdk-react-core";
 import {getWeb3Provider, getSigner,} from '@dynamic-labs/ethers-v6'
+
 const MainApp = () => {
     // const isMounted = React.useRef(false);
     // const {user, primaryWallet, handleLogOut} = useDynamicContext();

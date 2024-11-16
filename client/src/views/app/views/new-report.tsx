@@ -1,141 +1,112 @@
-import React from 'react';
-import { AppContext } from "@/views/app/contexts/app-context.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Textarea } from "@/components/ui/textarea.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { ArrowUpRight, Paperclip } from "lucide-react";
+import { useState } from "react";
+import Verify from "./verify.tsx"; // Assuming Verify component exists for comparison
 
-const NewReport = () => {
-    const { API, utils } = React.useContext(AppContext);
-    const fileInputRef = React.useRef<null | HTMLInputElement>(null);
-    const [fileBase64, setFileBase64] = React.useState<string | null>(null);
-    const [title, setTitle] = React.useState<string>("");
-    const [description, setDescription] = React.useState<string>("");
+const AppDashboard = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalData, setModalData] = useState<any>(null);
+    const [submittedText, setSubmittedText] = useState<string>(""); // To store fetched text
+    const [submittedImageBase64, setSubmittedImageBase64] = useState<string>(""); // To store fetched image
 
-    API.components.category.setDisplay(false);
+    const [verificationText, setVerificationText] = useState<string>(""); // User input for verification
+    const [verificationImageBase64, setVerificationImageBase64] = useState<string>(""); // User input for verification image
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (!files || files.length === 0) return;
+    // Fetch the submitted content from the backend
+    const fetchSubmittedData = async () => {
+        try {
+            const response = await fetch('/api/submit-content', { method: 'GET' });
 
-        const file = files[0];
-        if (file.type.split('/')[0] !== 'image') {
-            utils.toast.error('Please upload an image file');
-            return;
+            if (!response.ok) {
+                throw new Error("Failed to fetch submitted data");
+            }
+
+            const result = await response.json();
+
+            // Update the state with the fetched data
+            setSubmittedText(result.submitted_text);
+            setSubmittedImageBase64(result.submitted_image_base64);
+
+        } catch (error) {
+            console.error("Error fetching submitted data:", error);
         }
-        if (file.size > 2 * 1024 * 1024) {
-            utils.toast.error('Please upload an image file under 2MB');
-            return;
-        }
-
-        // Convert the image to Base64
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setFileBase64(reader.result as string);
-        };
-        reader.readAsDataURL(file);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    // Handle verification image file input
+    const handleVerificationImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setVerificationImageBase64(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            console.error('Please upload a valid image file');
+        }
+    };
 
-        const payload = {
-            proof_text: `${title}: ${description}`,
-            proof_image: fileBase64,
-        };
-
-        console.log("Payload JSON:", JSON.stringify(payload, null, 2));
-
+    // Handle verification comparison
+    const compareData = async () => {
         try {
-            const response = await fetch("/api/submit-content", {
-                method: "POST",
+            const payload = {
+                submitted_text: submittedText,
+                verification_text: verificationText,
+                submitted_image_base64: submittedImageBase64,
+                verification_image_base64: verificationImageBase64,
+            };
+
+            const response = await fetch('/api/verify-content', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
             });
 
-            console.log("Response status:", response.status);
-
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Error response from server:", errorText);
-                utils.toast.error("Failed to submit the report");
-                return;
+                throw new Error("Failed to compare data");
             }
 
             const result = await response.json();
-            console.log("Parsed response:", result);
-            utils.toast.success("Report submitted successfully");
+
+            // Set the result to be displayed in the modal
+            setModalData(result);
+            setIsModalOpen(true); // Show the modal with the comparison results
+
         } catch (error) {
-            console.error("Network or other error:", error);
-            utils.toast.error("An error occurred while submitting the report");
+            console.error("Error during data comparison:", error);
         }
     };
 
-
     return (
         <div>
-            <h1 className="text-lg font-semibold">Create a new report</h1>
-            <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-                <div className="space-y-1">
-                    <Label htmlFor="report-title">Title</Label>
-                    <Input
-                        id="report-title"
-                        className="py-5 rounded-xl border-black"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                </div>
-                <div className="space-y-1">
-                    <Label htmlFor="report-description">Description</Label>
-                    <Textarea
-                        id="report-description"
-                        rows={4}
-                        className="rounded-xl border-black resize-none"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                </div>
-                <div className="flex items-center gap-x-4">
-                    <input
-                        type="file"
-                        className="hidden"
-                        ref={fileInputRef}
-                        accept="image/*"
-                        onChange={handleFileUpload}
-                    />
-                    <Button
-                        onClick={() => fileInputRef.current?.click()}
-                        type="button"
-                        className="bg-[#F8F8FD] text-[#515B6F] outline-dashed border-t-transparent outline-2"
-                        variant="outline"
-                    >
-                        <Paperclip className="size-5 mr-1 text-[#4A8209]" /> Attach Photos
-                    </Button>
-                    <Button onClick={() => fileInputRef.current?.click()} type={'button'}
-                        className={'bg-[#F8F8FD] text-[#515B6F] outline-dashed border-t-transparent outline-2'}
-                        variant={'outline'}>
-                        <Paperclip className={'size-5 mr-1 text-[#4A8209]'} /> Attach Videos
-                    </Button>
-                </div>
-                {fileBase64 && (
-                    <p className="text-gray-500">
-                        <b>Image uploaded successfully</b>
-                    </p>
+            <button onClick={fetchSubmittedData}>Fetch Submitted Data</button>
+
+            <div>
+                {/* Verification inputs for user to provide */}
+                <input
+                    type="text"
+                    placeholder="Enter verification text"
+                    value={verificationText}
+                    onChange={(e) => setVerificationText(e.target.value)}
+                />
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleVerificationImageUpload}
+                />
+
+                {/* Submit for verification comparison */}
+                <Button onClick={compareData}>Compare and Verify</Button>
+
+                {isModalOpen && modalData && (
+                    <div className="modal">
+                        <Verify {...modalData} closeModal={() => setIsModalOpen(false)} />
+                    </div>
                 )}
-                <div className="pt-5">
-                    <Button
-                        type="submit"
-                        className="bg-[#b9ff66] hover:bg-[#a3ff66] border-[#4A8209] border-[1.6px] rounded-full w-full text-black py-6 text-lg font-semibold"
-                    >
-                        Submit Report <ArrowUpRight className="size-8" />
-                    </Button>
-                </div>
-            </form>
+            </div>
         </div>
     );
 };
 
-export default NewReport;
+export default AppDashboard;

@@ -19,9 +19,10 @@ def submit_content():
               response: isMatching: <bool>, matching: <str>, score: <int>/100
     '''
     # Log the request headers and body for debugging
-    print("Headers:", request.headers)
-    print("Data:", request.data)
-    print("JSON:", request.get_json(silent=True))
+    if app.debug:
+        print("Headers:", request.headers)
+        print("Data:", request.data)
+        print("JSON:", request.get_json(silent=True))
 
     # Pass the request to the handler
     return handle_submit_content(request)
@@ -30,8 +31,9 @@ def submit_content():
 def verify_content():
     """
     Handles the verification of submitted content.
+    Expects necessary verification parameters in the request.
     """
     return verify_content_handler(request)
 
-
-app.run("0.0.0.0", port=8080, debug=True)
+if __name__ == "__main__":
+    app.run("0.0.0.0", port=8080, debug=True)
