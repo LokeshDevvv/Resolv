@@ -41,7 +41,7 @@ const LandingPage = () => {
                                 if (!isLoggedIn) {
                                     alert("Please login to continue!")
                                 } else {
-                                    navigate(ROUTES.auth)
+                                    navigate(ROUTES.app.dashboard)
                                 }
                             }} className={'py-6'}>
                                 {isLoggedIn ? "Go to App" : "Login to get started"}

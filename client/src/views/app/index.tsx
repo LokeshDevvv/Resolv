@@ -175,10 +175,10 @@ const App = () => {
                             </div>
                         </div>
                         <div
-                            className={cn('md:col-span-6 col-span-12', !components.category.display && 'md:col-span-9 col-span-12', 'order-2 md:order-none')}>
+                            className={cn('md:col-span-7 col-span-12', !components.category.display && 'md:col-span-10 col-span-12', 'order-2 md:order-none')}>
                             <Outlet/>
                         </div>
-                        <div className={'md:col-span-3 col-span-12 order-1 md:-order-none'}>
+                        <div className={'md:col-span-2 col-span-12 order-1 md:-order-none'}>
                             <div className={' border-[2px] rounded-lg'}>
                                 <AppAside/>
                             </div>

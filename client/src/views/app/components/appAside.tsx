@@ -43,6 +43,7 @@ const AppAside = () => {
                                 variant={'link'}
                                 className={cn(
                                     components.aside.currentPointer === link.route && 'underline text-[#4A8209]',
+                                    'text-base'
                                 )}
                             >{link.name}</Button>
                         </Link>
