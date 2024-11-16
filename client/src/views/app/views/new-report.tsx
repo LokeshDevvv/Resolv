@@ -43,7 +43,7 @@ const NewReport = () => {
 
     const handleGPSLocGet = () => {
         setGpsProcessing(true);
-        if(navigator.geolocation){
+        if (navigator.geolocation) {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     const {latitude, longitude} = position.coords;
@@ -75,14 +75,10 @@ const NewReport = () => {
             proof_image: fileBase64,
         };
 
-        console.log("Payload JSON:", JSON.stringify(payload, null, 2));
         setProcessing(true);
         fetch("/api/submit-content", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
+            body: new URLSearchParams(payload),
         }).then(ir => ir.json())
             .then(response => {
                 if (response?.isMatching === true) {
@@ -91,6 +87,21 @@ const NewReport = () => {
                             let sev_score = response?.severity_score; // this will be of type number range from 0-10
                             //convert the above score from 10 to 5 without floating point
                             let severity_score = Math.round(sev_score / 2);
+                            let category = response?.category || "Others";
+                            let suggestions = response?.suggestions || "";
+                            let description = `<div class="uploaded-text">
+                                        <b>AI Summary: </b> ${response?.reason_severity_score || "-"} <br>
+                                        <b>AI Suggestions: </b> ${suggestions || "-"} <br>
+                            </div>`
+                            const details = JSON.stringify({title, description})
+                            const location = JSON.stringify({lat, long})
+
+                            console.log(details, location, category, severity_score)
+
+                            //store in filecoin -> get _mediaCID
+
+                            //write in blockchain
+
 
                         } else {
                             utils.toast.error("DS mismatch! [D-500]")
