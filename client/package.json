@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dynamic-labs/ethereum": "^3.6.3",
+    "@dynamic-labs/ethers-v6": "^3.6.3",
+    "@dynamic-labs/sdk-react-core": "^3.6.3",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
@@ -34,7 +37,8 @@
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^1.1.1"
+    "vaul": "^1.1.1",
+    "viem": "^2.21.45"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
