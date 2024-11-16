@@ -24,18 +24,7 @@ If the situation is a severe or urgent problem (e.g., broken infrastructure, saf
 it should be assigned a high severity score. If the problem is less urgent or involves minor issues 
 (e.g., minor road problems or typical delays), it should be assigned a lower severity score.
 
-Additionally, if the severity score is:
-- **Less than 5**: Provide basic tips or suggestions to solve the problem. 
-  - If it's a **medical situation**, provide first aid tips. 
-  - If it's a **general situation**, give practical advice or quick fixes. 
-- **Between 5 and 7**: Categorize the issue as **medium priority** and suggest steps to resolve the issue or notify appropriate authorities.
-- **Above 7**: Categorize the issue as **high priority** and provide immediate actions to take, such as contacting emergency services or relevant professionals.
-
-Example Suggestions:
-- For low severity (medical): "Clean the wound with water and apply a bandage."
-- For low severity (general): "Tighten the loose screw or use temporary tape."
-- For medium severity: "Contact local maintenance or inform the city council."
-- For high severity: "Call emergency services or evacuate the area immediately."
+If the severity score is **less than 5**, provide basic tips or suggestions to address the issue. For **medical situations**, offer first aid advice such as cleaning a wound with water and applying a bandage, while for general issues, suggest simple fixes like tightening a loose screw or using temporary tape. If the severity score falls **between 5 and 7**, categorize the issue as **medium priority** and recommend appropriate steps, such as contacting local maintenance, notifying authorities, or informing the city council. For scores **above 7**, classify the issue as **high priority** and advise immediate action, such as contacting emergency services, evacuating the area, or consulting relevant professionals.
 
 Analyze the following image and statement to assess the nature and severity of the situation. Determine if the image shows an issue and whether the provided statement aligns with the problem depicted. Additionally, categorize the situation into one of the following categories based on the context:
 
@@ -47,13 +36,7 @@ Analyze the following image and statement to assess the nature and severity of t
 5. Health and Hygiene (e.g., medical emergencies, sanitation)
 6. Emergency Situations (e.g., natural disasters, fire hazards)
 7. Noise and Air Pollution (e.g., loud noises, vehicle emissions)
-8. Medical Situations (e.g., minor injuries, major health concerns)
-9. Priority-Based (Low, Medium, High Priority)
-
-### Additional Instructions:
-- If the severity score is less than **5**, provide general tips or quick fixes to resolve the issue.
-- If the severity score is between **5 and 7**, classify it as **medium priority** and suggest appropriate actions or authorities to contact.
-- If the severity score is greater than **7**, classify it as **high priority** and recommend immediate actions.
+8. Priority-Based (Low, Medium, High Priority)
 
 ### Output Format:
 ```json
