@@ -51,10 +51,6 @@ const AppRouter = createBrowserRouter([
                    <AppRewards />
                 </SuspenseWrapper>
             },
-
-          
-
-
             {
                 path: ROUTES.app['follow-us'],
                 element: <SuspenseWrapper>
