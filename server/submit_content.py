@@ -16,7 +16,7 @@ def handle_submit_content(request):
     prompt = """
     Check if the image is public property or city property. Check if the image contains a problem or everything is fine. 
 Also check if the given STATEMENT matches the problem in the image. Calculate the relevancy score between the image and the STATEMENT. 
-"isMatching" is "true" when the "score" is greater than "80%". 
+"isMatching" is "true" when the "score" is greater than "80%" true only if the image and text are relevant to each other. 
 
 Analyze the following situation and predict the severity of the problem based on the description provided. 
 If the situation is a severe or urgent problem (e.g., broken infrastructure, safety hazards, major delays), 

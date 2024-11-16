@@ -4,7 +4,7 @@ import {lazy} from "react";
 import AppDashboard from "@/views/app/views/dashboard.tsx";
 import {ROUTES} from "@/constants/routes.tsx";
 import {AppContextProvider} from "@/views/app/contexts/app-context.tsx";
-import Verify from '@/views/app/views/verify';
+//import Verify from '@/views/app/views/verify';
 import FollowUs from '@/views/app/views/follow-us';
 
 const LandingPage = lazy(() => import("@/views/landing"));
@@ -51,12 +51,7 @@ const AppRouter = createBrowserRouter([
                 </SuspenseWrapper>
             },
 
-            {
-                path: ROUTES.app.rewards,
-                element: <SuspenseWrapper>
-                    <Verify />
-                </SuspenseWrapper>
-            },
+          
 
 
             {
