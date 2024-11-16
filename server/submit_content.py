@@ -11,7 +11,7 @@ load_dotenv()
 @app.route('/api/submit-content', methods=['POST'])
 def handle_submit_content(request):
     print("Received payload:", request.form)
-    proof_image = request.form.get('proof_image')  
+    proof_image = request.form.get('proof_image')
     proof_text = request.form.get('proof_text')
 
     prompt = """

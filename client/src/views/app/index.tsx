@@ -133,14 +133,12 @@ const App = () => {
         setverifying(false);
         setView('content');
         utils.toast.success(
-            <>You have been successfully verified using <b>Oasis Private Layer</b>.
-                <br/>
-                <span className={'font-semibold'}>View
-                    <a className='text-blue-500 hover:underline'
-                       href={`https://explorer.oasis.io/testnet/sapphire/tx/${tx}`}>
-                        Transaction.
-                    </a>
-                </span>
+            <>
+                You have been successfully verified using <b>Oasis Private Layer</b>.
+                View <a target={'_blank'} className='text-blue-500 hover:underline'
+                        href={`https://explorer.oasis.io/testnet/sapphire/tx/${tx}`}>
+                Transaction.
+            </a>
             </>
         )
     }

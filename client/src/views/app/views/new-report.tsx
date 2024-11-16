@@ -7,6 +7,21 @@ import {Button} from "@/components/ui/button.tsx";
 import {ArrowUpRight, Loader, Paperclip} from "lucide-react";
 import lighthouse from "@lighthouse-web3/sdk";
 import {base64ToFile} from "@/views/app/components/apis.ts";
+import {createPublicClient, createWalletClient, custom, http} from "viem";
+import {scrollSepolia} from "viem/chains";
+import {CommonABI, ScrollSepolia} from "@/constants/multichain-contracts.ts";
+import {useNavigate} from "react-router-dom";
+import {ROUTES} from "@/constants/routes.tsx";
+
+const publicClient = createPublicClient({
+    chain: scrollSepolia,
+    transport: http()
+})
+const walletClient = createWalletClient({
+    chain: scrollSepolia,
+    transport: custom(window.ethereum)
+})
+const [account] = await walletClient.getAddresses()
 
 const NewReport = () => {
     const {API, utils} = React.useContext(AppContext);
@@ -19,26 +34,73 @@ const NewReport = () => {
     const [long, setLong] = React.useState<number | null>(null);
     API.components.category.setDisplay(false);
     const [gpsProcessing, setGpsProcessing] = React.useState<boolean>(false);
+    const navigate = useNavigate();
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (!files || files.length === 0) return;
-
-        const file = files[0];
-        if (file.type.split('/')[0] !== 'image') {
+        //validate if the file is an image
+        if (files && files[0].type.split('/')[0] !== 'image') {
             utils.toast.error('Please upload an image file');
             return;
         }
-        if (file.size > 2 * 1024 * 1024) {
+        // dont allow svg
+        if (files && files[0].type === 'image/svg+xml') {
+            utils.toast.error('SVG files are not allowed');
+            return;
+        }
+        //dont allow gif
+        if (files && files[0].type === 'image/gif') {
+            utils.toast.error('GIF files are not allowed');
+            return;
+        }
+        //dont allow webp
+        if (files && files[0].type === 'image/webp') {
+            utils.toast.error('WebP files are not allowed');
+            return;
+        }
+        //validate if the file is under 2MB
+        //if not, compress the image to 1.5MB
+        if (files && files[0].size > 2 * 1024 * 1024) {
             utils.toast.error('Please upload an image file under 2MB');
             return;
         }
-
-        // Convert the image to Base64
+        //compress the image using canvas
         const reader = new FileReader();
-        reader.onloadend = () => {
-            setFileBase64(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob((blob) => {
+                        // @ts-ignore
+                        const compressedFile = new File([blob as Blob], files[0].name, {
+                            // @ts-ignore
+                            type: files[0].type,
+                            lastModified: Date.now()
+                        });
+                        console.log(compressedFile);
+                        // setFile(compressedFile);
+                        // // create a blob url of the compressed image
+                        // const blobUrl = URL.createObjectURL(compressedFile);
+                        // console.log(blobUrl);
+
+                        //convert the image to base64 and set it to the state
+                        const in_reader = new FileReader();
+                        in_reader.onloadend = () => {
+                            setFileBase64(in_reader.result as string);
+                        };
+                        in_reader.readAsDataURL(compressedFile);
+                        // @ts-ignore
+                    }, files[0].type, 0.5);
+                }
+            }
+            img.src = e.target?.result as string;
+        }
+        // @ts-ignore
+        reader.readAsDataURL(files[0]);
     };
 
     const handleGPSLocGet = () => {
@@ -80,7 +142,7 @@ const NewReport = () => {
             method: "POST",
             body: new URLSearchParams(payload),
         }).then(ir => ir.json())
-            .then(response => {
+            .then((response) => {
                 if (response?.isMatching === true) {
                     if (response?.score >= 80) {
                         if (response?.severity_score) {
@@ -100,16 +162,34 @@ const NewReport = () => {
                             //store in filecoin -> get _mediaCID
                             const file = base64ToFile(fileBase64, `${Date.now()}.jpg`);
                             setProcessing(true);
-                            lighthouse.upload([file], '1d7a4666.078c09b786c844d8ab70d56054d33836').then(uploadResp => {
+                            lighthouse.upload([file], '1d7a4666.078c09b786c844d8ab70d56054d33836').then(async (uploadResp) => {
                                 console.log(uploadResp);
                                 const cID = uploadResp.data.Hash;
-                                console.log(details, location, category, severity_score, cID)
+                                // console.log(details, location, category, severity_score, cID)
 
                                 //write in blockchain
-
+                                setProcessing(true);
+                                const {request} = await publicClient.simulateContract({
+                                    address: ScrollSepolia,
+                                    abi: CommonABI,
+                                    functionName: 'submitReport',
+                                    args: [
+                                        details, location, cID, category, severity_score
+                                    ],
+                                    account
+                                })
+                                const tx = await walletClient.writeContract(request);
+                                setProcessing(false);
+                                utils.toast.success(
+                                    <>
+                                        <p>Report submitted successfully!</p>
+                                        <p>View <a target={'_blank'} className={'underline'}
+                                                   href={`https://scroll-sepolia.blockscout.com/tx/${tx}`}>Transaction.</a>
+                                        </p>
+                                    </>
+                                )
+                                navigate(ROUTES.app.reports);
                             });
-
-
 
 
                         } else {
