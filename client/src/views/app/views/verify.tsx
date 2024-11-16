@@ -6,16 +6,23 @@ import { Textarea } from "@/components/ui/textarea.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { ArrowUpRight, Paperclip } from "lucide-react";
 
-const Verify = () => {
+// Define props to receive submitted text and base64 image
+interface VerifyProps {
+    submittedText: string;
+    submittedImageBase64: string;
+}
+
+const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
     const { API, utils } = useContext(AppContext);
     const fileInputRef = useRef<null | HTMLInputElement>(null);
     const [fileBase64, setFileBase64] = useState<string | null>(null);
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [upvoteCount, setUpvoteCount] = useState<number>(0); // Track upvotes
+    const [downvoteCount, setDownvoteCount] = useState<number>(0); // Track downvotes
 
     API.components.category.setDisplay(false);
 
-    // Handle file upload
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (!files || files.length === 0) return;
@@ -42,8 +49,10 @@ const Verify = () => {
         e.preventDefault();
 
         const payload = {
-            verify_text: `${title}: ${description}`,
-            verify_image: fileBase64,
+            submitted_text: submittedText,  // Text from new-reports.tsx
+            verification_text: `${title}: ${description}`,
+            submitted_image_base64: submittedImageBase64,  // Base64 image from new-reports.tsx
+            verification_image_base64: fileBase64,
         };
 
         console.log("Payload JSON:", JSON.stringify(payload, null, 2));
@@ -68,6 +77,19 @@ const Verify = () => {
 
             const result = await response.json();
             console.log("Parsed response:", result);
+
+            // Assuming the response contains a reason_severity_score
+            const { reason_severity_score } = result;
+
+            // Update the upvote or downvote count based on reason_severity_score
+            if (reason_severity_score > 70) {
+                setUpvoteCount(prevCount => prevCount + 1); // Increment upvote count
+                utils.toast.success("Upvoted successfully");
+            } else {
+                setDownvoteCount(prevCount => prevCount + 1); // Increment downvote count
+                utils.toast.success("Downvoted successfully");
+            }
+
             utils.toast.success("Verification submitted successfully");
         } catch (error) {
             console.error("Network or other error:", error);
@@ -99,7 +121,7 @@ const Verify = () => {
                     />
                 </div>
                 <div className="flex items-center gap-x-4">
-                    <input
+                    <Input
                         type="file"
                         className="hidden"
                         ref={fileInputRef}
@@ -125,6 +147,7 @@ const Verify = () => {
                         <b>Image uploaded successfully</b>
                     </p>
                 )}
+
                 <div className="pt-5">
                     <Button
                         type="submit"
@@ -134,6 +157,18 @@ const Verify = () => {
                     </Button>
                 </div>
             </form>
+
+            {/* Display upvote and downvote counts */}
+            <div className="mt-4 flex gap-4">
+                <div className="flex items-center">
+                    <span className="mr-2">Upvotes:</span>
+                    <span>{upvoteCount}</span>
+                </div>
+                <div className="flex items-center">
+                    <span className="mr-2">Downvotes:</span>
+                    <span>{downvoteCount}</span>
+                </div>
+            </div>
         </div>
     );
 };
