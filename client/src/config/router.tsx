@@ -18,7 +18,7 @@ const AppRouter = createBrowserRouter([
         element: <SuspenseWrapper><LandingPage/></SuspenseWrapper>
     },
     {
-        path: '/auth',
+        path: ROUTES.auth,
         element: <SuspenseWrapper><AuthPage/></SuspenseWrapper>
     },
     {

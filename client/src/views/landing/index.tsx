@@ -4,7 +4,6 @@ import illustration from "./assets/illustration.svg";
 import Logo from "@/components/logo.tsx";
 import {DynamicWidget} from '@dynamic-labs/sdk-react-core';
 import {useIsLoggedIn} from '@dynamic-labs/sdk-react-core';
-import React from "react";
 import {useNavigate} from "react-router-dom";
 import {ROUTES} from "@/constants/routes.tsx";
 
@@ -42,7 +41,7 @@ const LandingPage = () => {
                                 if (!isLoggedIn) {
                                     alert("Please login to continue!")
                                 } else {
-                                    navigate(ROUTES.app.dashboard)
+                                    navigate(ROUTES.auth)
                                 }
                             }} className={'py-6'}>
                                 {isLoggedIn ? "Go to App" : "Login to get started"}

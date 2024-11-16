@@ -9,6 +9,7 @@ const ROUTES = {
         "follow-us": "/app/follow-us",
         "help-feedback": "/app/help-feedback"
     },
+    auth: "/auth"
 }
 
 export {ROUTES}
