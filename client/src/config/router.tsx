@@ -4,6 +4,8 @@ import {lazy} from "react";
 import AppDashboard from "@/views/app/views/dashboard.tsx";
 import {ROUTES} from "@/constants/routes.tsx";
 import {AppContextProvider} from "@/views/app/contexts/app-context.tsx";
+import Verify from '@/views/app/views/verify';
+import FollowUs from '@/views/app/views/follow-us';
 
 const LandingPage = lazy(() => import("@/views/landing"));
 const AuthPage = lazy(() => import("@/views/auth"));
@@ -11,6 +13,7 @@ const App = lazy(() => import("@/views/app"));
 const MyReports = lazy(() => import("@/views/app/views/my-reports.tsx"));
 const NewReport = lazy(() => import("@/views/app/views/new-report.tsx"));
 const AppRewards = lazy(() => import("@/views/app/views/rewards.tsx"));
+const Verify = lazy(() => import("@/views/app/views/verify.tsx"));
 
 const AppRouter = createBrowserRouter([
     {
@@ -47,10 +50,19 @@ const AppRouter = createBrowserRouter([
                    <AppRewards />
                 </SuspenseWrapper>
             },
+
+            {
+                path: ROUTES.app.rewards,
+                element: <SuspenseWrapper>
+                    <Verify />
+                </SuspenseWrapper>
+            },
+
+
             {
                 path: ROUTES.app['follow-us'],
                 element: <SuspenseWrapper>
-                    <div>Follow Us</div>
+                    <FollowUs />
                 </SuspenseWrapper>
             },
             {
