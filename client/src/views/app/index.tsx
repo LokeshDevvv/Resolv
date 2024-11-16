@@ -15,6 +15,7 @@ import Preloader from "@/components/ui/preloader.tsx";
 import {getIpLocation, stringToBytes32} from "@/views/app/components/apis.ts";
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
 import NetworkSwitcher from "@/views/app/components/network-switcher.tsx";
+import {GlobalContext} from "@/contexts/global-context.tsx";
 
 const publicClient = createPublicClient({
     chain: sapphireTestnet,
@@ -27,13 +28,14 @@ const walletClient = createWalletClient({
 const [account] = await walletClient.getAddresses()
 
 const App = () => {
+    const {primaryWallet, networks, setWalletTools} = React.useContext(GlobalContext)
     const [view, setView] = React.useState('loading');
     const [verifying, setverifying] = React.useState(false);
     const {components} = React.useContext(AppContext);
     const [transactionHash, setTransactionHash] = React.useState('');
     const switchNetwork = useSwitchNetwork();
     const {utils} = React.useContext(AppContext)
-    const {primaryWallet, user} = useDynamicContext();
+    const {user} = useDynamicContext();
     const isLoggedIn = useIsLoggedIn();
     const isMounted = React.useRef(false);
     const navigate = useNavigate();
@@ -43,9 +45,14 @@ const App = () => {
         if (!isMounted.current) {
             isMounted.current = true;
             checkLoginStatus();
+            refreshNwTools();
         }
     }, []);
-
+    async function refreshNwTools() {
+        console.log('refreshing network tools');
+        const networkId = await primaryWallet?.getNetwork();
+        setWalletTools(networks[networkId])
+    }
     React.useEffect(() => {
         if (primaryWallet && !isVerificationCheckDone.current) {
             checkIsUserVerified();
@@ -142,7 +149,6 @@ const App = () => {
             </>
         )
     }
-
     return (
         <div>
             <AppNavbar/>

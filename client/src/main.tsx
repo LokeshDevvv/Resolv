@@ -25,7 +25,7 @@ const evmNetworks = [
         vanityName: 'Sapphire Testnet',
     },
     {
-        blockExplorerUrls: ['https://sepolia.scrollscan.com'],
+        blockExplorerUrls: ['https://scroll-sepolia.blockscout.com'],
         chainId: 534351,
         chainName: 'Scroll Sepolia Testnet',
         iconUrls: ['https://icons.llamao.fi/icons/chains/rsz_scroll.jpg'],
@@ -40,6 +40,57 @@ const evmNetworks = [
 
         rpcUrls: ['https://sepolia-rpc.scroll.io'],
         vanityName: 'Scroll Sepolia Testnet',
+    },
+    {
+        blockExplorerUrls: ['https://explorer-ui.cardona.zkevm-rpc.com'],
+        chainId: 1442,
+        chainName: 'Polygon zkEVM Testnet',
+        iconUrls: ['https://icons.llamao.fi/icons/chains/rsz_polygon%20zkevm.jpg'],
+        name: 'Scroll',
+        nativeCurrency: {
+            decimals: 18,
+            name: 'ETH',
+            symbol: 'ETH',
+            iconUrl: 'https://icons.llamao.fi/icons/chains/rsz_polygon%20zkevm.jpg',
+        },
+        networkId: 1442,
+
+        rpcUrls: ['https://rpc.public.zkevm-test.net/'],
+        vanityName: 'Polygon zkEVM Testnet',
+    },
+    {
+        blockExplorerUrls: ['https://base-sepolia.blockscout.com'],
+        chainId: 84532,
+        chainName: 'Base Sepolia Testnet',
+        iconUrls: ['https://chainlist.org/unknown-logo.png'],
+        name: 'Scroll',
+        nativeCurrency: {
+            decimals: 18,
+            name: 'ETH',
+            symbol: 'ETH',
+            iconUrl: 'https://chainlist.org/unknown-logo.png',
+        },
+        networkId: 84532,
+
+        rpcUrls: ['https://base-sepolia.blockpi.network/v1/rpc/public'],
+        vanityName: 'Base Sepolia Testnet',
+    },
+    {
+        blockExplorerUrls: ['https://explorer.testnet.zircuit.com'],
+        chainId: 48899,
+        chainName: 'Zircuit Testnet',
+        iconUrls: ['https://icons.llamao.fi/icons/chains/rsz_zircuit.jpg'],
+        name: 'Scroll',
+        nativeCurrency: {
+            decimals: 18,
+            name: 'ETH',
+            symbol: 'ETH',
+            iconUrl: 'https://icons.llamao.fi/icons/chains/rsz_zircuit.jpg',
+        },
+        networkId: 48899,
+
+        rpcUrls: ['https://zircuit1-testnet.p2pify.com'],
+        vanityName: 'Zircuit Testnet',
     },
 ]
 createRoot(document.getElementById('root')!).render(
