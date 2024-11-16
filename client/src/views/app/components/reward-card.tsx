@@ -14,7 +14,7 @@ const RewardCard = (
     return (
         <div className={'rounded-2xl border-[2px]'}>
             <div className={'max-w-sm rounded overflow-hidden flex items-center justify-center'}>
-                <img src={image} className={'rounded-t-2xl object-fit h-[160px]'} alt={title}/>
+                <img src={image} className={'rounded-t-xl object-fit h-[100px] py-4'} alt={title}/>
             </div>
             <div className={'p-4'}>
                 <h1 className={'text-lg font-bold font-epilogue'}>
@@ -36,7 +36,7 @@ const RewardCard = (
                         </div>
                     </div>
                 </div>
-                <div className={'mt-4'}>
+                <div className={'mt-2'}>
                     <Button onClick={onClick}
                             className={'w-full bg-[#4A8209] hover:bg-[#1A8209] rounded-full py-5 text-white text-lg'}>
                         Redeem <ArrowUpRight className={'size-4'}/>

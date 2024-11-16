@@ -14,6 +14,7 @@ const MyReports = lazy(() => import("@/views/app/views/my-reports.tsx"));
 const NewReport = lazy(() => import("@/views/app/views/new-report.tsx"));
 const AppRewards = lazy(() => import("@/views/app/views/rewards.tsx"));
 const Verify = lazy(() => import("@/views/app/views/verify.tsx"));
+const HelpFeedback = lazy(() => import("@/views/app/views/help-feedback"));
 
 const AppRouter = createBrowserRouter([
     {
@@ -63,7 +64,7 @@ const AppRouter = createBrowserRouter([
             {
                 path: ROUTES.app['help-feedback'],
                 element: <SuspenseWrapper>
-                    <div>Help & Feedback</div>
+                    <HelpFeedback />
                 </SuspenseWrapper>
             }
         ]

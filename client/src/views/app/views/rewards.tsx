@@ -1,14 +1,14 @@
 import React from 'react';
 import {AppContext} from "@/views/app/contexts/app-context.tsx";
 import RewardCard from "@/views/app/components/reward-card.tsx";
-import img1 from "@/views/app/assets/image 1.png";
-import img2 from "@/views/app/assets/image 2.png";
-import img3 from "@/views/app/assets/image 3.png";
-import img4 from "@/views/app/assets/image 4.png";
-import img6 from "@/views/app/assets/image 6.png";
-import img7 from "@/views/app/assets/image 7.png";
-import img8 from "@/views/app/assets/image 8.png";
-import img9 from "@/views/app/assets/image 9.png";
+import img1 from "@/views/app/assets/image1.png";
+import img2 from "@/views/app/assets/image2.png";
+import img3 from "@/views/app/assets/image3.png";
+import img4 from "@/views/app/assets/image4.png";
+import img6 from "@/views/app/assets/image6.png";
+import img7 from "@/views/app/assets/image7.png";
+import img8 from "@/views/app/assets/image8.png";
+import img9 from "@/views/app/assets/image9.png";
 const AppRewards = () => {
     const {API} = React.useContext(AppContext);
 
@@ -16,56 +16,56 @@ const AppRewards = () => {
 
     const products = [
         {
-            title: 'TShirt',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Amazon',
+            description: 'Online gift card for amazon...',
             points: 2500,
             image: img1
         },
         {
-            title: 'MacBook Air',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Flipkart',
+            description: 'Online gift card for flipkart...',
             points: 1000,
             image: img2
         },
         {
-            title: 'Laptop',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Uber',
+            description: 'Online gift for uber',
             points: 2500,
             image: img3
         },
         {
-            title: 'Headphones',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Uber Eats',
+            description: 'Online gift for uber eats',
             points: 2500,
             image: img4
         },
         {
-            title: 'Smart Phone',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Grab',
+            description: 'Online gift for grab',
             points: 2500,
             image: img6
         },
         {
-            title: 'Tablet',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Bolt',
+            description: 'Online gift for bolt..',
             points: 2500,
             image: img7
         },
         {
-            title: 'Camera',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Clear Trip',
+            description: 'Online gift for Clear Trip...',
             points: 2500,
             image: img8
         },
         {
-            title: 'Speaker',
-            description: '2020 Tshirt MacBook Air Laptop...',
+            title: 'Make My Trip',
+            description: 'Online gift for Make My Trip...', 
             points: 2500,
             image: img9
         }
     ];
     return (
-        <div className={'grid grid-cols-2 md:grid-cols-3 gap-8 lg:grid-cols-4'}>
+        <div className={'grid grid-cols-2 md:grid-cols-3 gap-6 lg:grid-cols-4'}>
             {
                 products.map((product, index) => (
                     <RewardCard
