@@ -5,8 +5,8 @@ import {Input} from "@/components/ui/input.tsx";
 import {Textarea} from "@/components/ui/textarea.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {ArrowUpRight, Loader, Paperclip} from "lucide-react";
-import * as util from "node:util";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import lighthouse from "@lighthouse-web3/sdk";
+import {base64ToFile} from "@/views/app/components/apis.ts";
 
 const NewReport = () => {
     const {API, utils} = React.useContext(AppContext);
@@ -96,11 +96,20 @@ const NewReport = () => {
                             const details = JSON.stringify({title, description})
                             const location = JSON.stringify({lat, long})
 
-                            console.log(details, location, category, severity_score)
 
                             //store in filecoin -> get _mediaCID
+                            const file = base64ToFile(fileBase64, `${Date.now()}.jpg`);
+                            setProcessing(true);
+                            lighthouse.upload([file], '1d7a4666.078c09b786c844d8ab70d56054d33836').then(uploadResp => {
+                                console.log(uploadResp);
+                                const cID = uploadResp.data.Hash;
+                                console.log(details, location, category, severity_score, cID)
 
-                            //write in blockchain
+                                //write in blockchain
+
+                            });
+
+
 
 
                         } else {

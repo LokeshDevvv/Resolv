@@ -13,6 +13,7 @@
     "@dynamic-labs/ethereum": "^3.6.3",
     "@dynamic-labs/ethers-v6": "^3.6.3",
     "@dynamic-labs/sdk-react-core": "^3.6.3",
+    "@lighthouse-web3/sdk": "^0.3.7",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-checkbox": "^1.1.2",
