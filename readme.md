@@ -32,6 +32,7 @@ Empowering communities with privacy-preserving, transparent, and efficient issue
 - **Highlights**:  
   - High scalability for frequent interactions.  
   - Cost-effective operations with low transaction fees.  
+  - Polygon zkEVM Cardona Sepolia, Sapphire, Base Sepolia, Zircuit, Scroll Sepolia.
 
 ### **3. Decentralized Storage**  
 - **Storage Network**: [Filecoin](https://filecoin.io/).  
@@ -79,7 +80,7 @@ Our platform uses the **Hyperbolic Pixtral-12B Vision Model**, which:
 ## ⚙️ **Tech Stack**  
 - **Frontend**: React, TypeScript.  
 - **Backend**: Flask, Solidity.  
-- **Blockchain**: Oasis Sapphire Network (Privacy Layer), Multichain L2s (Public Layer) that includes Polygon zkEVM, Sepolia, Sapphire, Base Sepolia, Zircuit
+- **Blockchain**: Oasis Sapphire Network (Privacy Layer), Multichain L2s (Public Layer) that includes Polygon zkEVM Cardona Sepolia, Sapphire, Base Sepolia, Zircuit, Scroll Sepolia.
 - **AI**: Hyperbolic Pixtral-12B Vision Model (Fine-tuned).  
 - **Storage**: Filecoin 
 
