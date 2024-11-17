@@ -71,7 +71,7 @@ const GlobalContextProvider = ({children}: { children: React.ReactNode }) => {
                     transport: custom(window.ethereum)
                 }),
                 block_explorer: 'https://explorer-ui.cardona.zkevm-rpc.com/tx',
-                address: '0x562db143B891D2D05A9e8B72c7DA59077E66A081'
+                address: '0x17910372dFfca2332391Ce04Bccc0f3e7959330F'
             },
             534351: {
                 publicClient: createPublicClient({
@@ -83,7 +83,7 @@ const GlobalContextProvider = ({children}: { children: React.ReactNode }) => {
                     transport: custom(window.ethereum)
                 }),
                 block_explorer: 'https://scroll-sepolia.blockscout.com/tx',
-                address: '0x13d31A2Eac646a6828b7A118204077Fb790fc0B7'
+                address: '0x1Eb044C3a05Af2920Fb79e744B673E2b85aE3A48'
             },
             84532: {
                 publicClient: createPublicClient({
@@ -95,7 +95,7 @@ const GlobalContextProvider = ({children}: { children: React.ReactNode }) => {
                     transport: custom(window.ethereum)
                 }),
                 block_explorer: 'https://base-sepolia.blockscout.com/tx',
-                address: '0x82B66862E605d5365128dcA5709Ab598b31D0e34'
+                address: '0x6C142517a6afb661Ccb96566a6394917011c9428'
             },
             48899: {
                 publicClient: createPublicClient({
@@ -107,7 +107,7 @@ const GlobalContextProvider = ({children}: { children: React.ReactNode }) => {
                     transport: custom(window.ethereum)
                 }),
                 block_explorer: 'https://explorer.testnet.zircuit.com/tx',
-                address: "0xB6dd2F403c14bB495B505724b4dA21582a1377aB"
+                address: "0xD197b96051b32159104df4c172D0393e84EbcC1c"
             },
         }
     }

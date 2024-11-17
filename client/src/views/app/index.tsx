@@ -25,10 +25,10 @@ const walletClient = createWalletClient({
     chain: sapphireTestnet,
     transport: custom(window.ethereum)
 })
-const [account] = await walletClient.getAddresses()
 
 const App = () => {
-    const {primaryWallet, networks, setWalletTools} = React.useContext(GlobalContext)
+    const {networks, setWalletTools} = React.useContext(GlobalContext)
+    const {primaryWallet, network} = useDynamicContext();
     const [view, setView] = React.useState('loading');
     const [verifying, setverifying] = React.useState(false);
     const {components} = React.useContext(AppContext);
@@ -45,14 +45,15 @@ const App = () => {
         if (!isMounted.current) {
             isMounted.current = true;
             checkLoginStatus();
-            refreshNwTools();
+            // refreshNwTools();
         }
     }, []);
-    async function refreshNwTools() {
-        console.log('refreshing network tools');
-        const networkId = await primaryWallet?.getNetwork();
-        setWalletTools(networks[networkId])
-    }
+
+    React.useEffect(() => {
+        // @ts-ignore
+        setWalletTools(networks[network])
+    }, [network])
+
     React.useEffect(() => {
         if (primaryWallet && !isVerificationCheckDone.current) {
             checkIsUserVerified();
@@ -106,6 +107,7 @@ const App = () => {
     }
 
     async function startOasisVerification() {
+        const [account] = await walletClient.getAddresses()
         setverifying(true);
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
@@ -149,6 +151,7 @@ const App = () => {
             </>
         )
     }
+
     return (
         <div>
             <AppNavbar/>

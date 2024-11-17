@@ -9,10 +9,11 @@ import lighthouse from "@lighthouse-web3/sdk";
 import { base64ToFile } from "@/views/app/components/apis.ts";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
 import { scrollSepolia } from "viem/chains";
-import { CommonABI, ScrollSepolia } from "@/constants/multichain-contracts.ts";
+import { CommonABI } from "@/constants/multichain-contracts.ts";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes.tsx";
 import imageCompression from "browser-image-compression";
+import {GlobalContext} from "@/contexts/global-context.tsx";
 
 const publicClient = createPublicClient({
     chain: scrollSepolia,
@@ -22,7 +23,6 @@ const walletClient = createWalletClient({
     chain: scrollSepolia,
     transport: custom(window.ethereum)
 });
-const [account] = await walletClient.getAddresses();
 
 const NewReport = () => {
     const { API, utils } = React.useContext(AppContext);
@@ -34,7 +34,7 @@ const NewReport = () => {
     const [lat, setLat] = React.useState<number | null>(null);
     const [long, setLong] = React.useState<number | null>(null);
     const [gpsProcessing, setGpsProcessing] = React.useState<boolean>(false);
-
+    const {walletTools} = React.useContext(GlobalContext);
     API.components.category.setDisplay(false);
     const navigate = useNavigate();
 
@@ -114,6 +114,7 @@ const NewReport = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const [account] = await walletClient.getAddresses();
 
         // Validate fields before submission
         if (title === '' || description === '' || !fileBase64) {
@@ -148,7 +149,7 @@ const NewReport = () => {
                     const cID = uploadResp.data.Hash;
 
                     const { request } = await publicClient.simulateContract({
-                        address: ScrollSepolia,
+                        address: walletTools.address,
                         abi: CommonABI,
                         functionName: 'submitReport',
                         args: [details, location, cID, category, sevScore],
@@ -197,15 +198,15 @@ const NewReport = () => {
                     <div className="flex flex-col md:flex-row items-center gap-4 w-full">
                         <div className="space-y-1 w-full">
                             <Label>Latitude</Label>
-                            <Input disabled value={lat} className="py-5 rounded-xl border-black" />
+                            <Input disabled value={lat} className="py-5 rounded-xl border-black"/>
                         </div>
                         <div className="space-y-1 w-full">
                             <Label>Longitude</Label>
-                            <Input disabled value={long} className="py-5 rounded-xl border-black" />
+                            <Input disabled value={long} className="py-5 rounded-xl border-black"/>
                         </div>
                     </div>
                     <Button type="button" onClick={handleGPSLocGet} className="py-5" disabled={gpsProcessing}>
-                        Get Location {gpsProcessing && <Loader className="animate-spin" />}
+                        Get Location {gpsProcessing && <Loader className="animate-spin"/>}
                     </Button>
                 </div>
                 <div className="space-y-1">
@@ -232,17 +233,21 @@ const NewReport = () => {
                         className="bg-[#F8F8FD] text-[#515B6F] outline-dashed border-t-transparent outline-2"
                         variant="outline"
                     >
-                        <Paperclip className="size-5 mr-1 text-[#4A8209]" /> Attach Photos/Videos
+                        <Paperclip className="size-5 mr-1 text-[#4A8209]"/> Attach Photos/Videos
                     </Button>
+                </div>
+                <div className={'font-semibold text-gray-600'}>
+                    Our AI Agents will be verifying your POV and updates will be shared with you immediately.
                 </div>
                 {fileBase64 && (
                     <p className="text-gray-500">
                         <b>Selected File:</b>
                         {fileBase64.startsWith("data:image/") ? (
-                            <img alt="selected" src={fileBase64} className="mt-2 rounded-lg border border-gray max-h-[200px] w-auto" />
+                            <img alt="selected" src={fileBase64}
+                                 className="mt-2 rounded-lg border border-gray max-h-[200px] w-auto"/>
                         ) : (
                             <video controls className="mt-2 rounded-lg border border-gray max-h-[200px] w-auto">
-                                <source src={fileBase64} />
+                                <source src={fileBase64}/>
                             </video>
                         )}
                     </p>
@@ -253,8 +258,8 @@ const NewReport = () => {
                         disabled={processing}
                         className="bg-[#b9ff66] hover:bg-[#a3ff66] border-[#4A8209] border-[1.5px] py-5 rounded-xl w-full text-black font-semibold"
                     >
-                        {processing && <Loader className="animate-spin mr-2" />}
-                        Submit Report <ArrowUpRight className="size-5 ml-1" />
+                        {processing && <Loader className="animate-spin mr-2"/>}
+                        Submit Report <ArrowUpRight className="size-5 ml-1"/>
                     </Button>
                 </div>
             </form>

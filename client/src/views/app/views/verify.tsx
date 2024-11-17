@@ -1,28 +1,29 @@
-import React, { useState, useRef, useContext } from 'react';
-import { AppContext } from "@/views/app/contexts/app-context.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Textarea } from "@/components/ui/textarea.tsx";
-import { Button } from "@/components/ui/button.tsx";
-import { ArrowUpRight, Paperclip } from "lucide-react";
+import React, {useState, useRef, useContext} from 'react';
+import {AppContext} from "@/views/app/contexts/app-context.tsx";
+import {Label} from "@/components/ui/label.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {Textarea} from "@/components/ui/textarea.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {ArrowUpRight, Paperclip} from "lucide-react";
+import {FILE_COIN_URL} from "@/constants/utils.ts";
+import {GlobalContext} from "@/contexts/global-context.tsx";
+import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
+import {CommonABI} from "@/constants/multichain-contracts.ts";
 
 // Define props to receive submitted text and base64 image
-interface VerifyProps {
-    submittedText: string;
-    submittedImageBase64: string;
-}
 
-const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
-    const { API, utils } = useContext(AppContext);
+const Verify = ({post, close = () => {}}: any) => {
+    const {primaryWallet} = useDynamicContext();
+    const {walletTools} = React.useContext(GlobalContext)
+    const {API, utils} = useContext(AppContext);
     const fileInputRef = useRef<null | HTMLInputElement>(null);
     const [fileBase64, setFileBase64] = useState<string | null>(null);
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [upvoteCount, setUpvoteCount] = useState<number>(0); // Track upvotes
     const [downvoteCount, setDownvoteCount] = useState<number>(0); // Track downvotes
-
-    API.components.category.setDisplay(false);
-
+    const [submittedImageBase64, setSubmittedImageBase64] = useState<string | null>(null);
+    console.log(post)
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (!files || files.length === 0) return;
@@ -47,6 +48,21 @@ const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        //download image
+        let imgURL = FILE_COIN_URL + '/' + post.mediaCID;
+        let img = new Image();
+        img.crossOrigin = 'Anonymous';
+        img.src = imgURL;
+        img.onload = function () {
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx?.drawImage(img, 0, 0);
+            let dataURL = canvas.toDataURL('image/png');
+            setSubmittedImageBase64(dataURL);
+        };
+        const submittedText = post.details?.title;
 
         const payload = {
             submitted_text: submittedText,  // Text from new-reports.tsx
@@ -79,18 +95,27 @@ const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
             console.log("Parsed response:", result);
 
             // Assuming the response contains a reason_severity_score
-            const { reason_severity_score } = result;
+            const {reason_severity_score} = result;
 
             // Update the upvote or downvote count based on reason_severity_score
             if (reason_severity_score > 70) {
-                setUpvoteCount(prevCount => prevCount + 1); // Increment upvote count
-                utils.toast.success("Upvoted successfully");
+                const [account] = await walletTools.walletClient.getAddresses();
+                const {request} = await walletTools.publicClient.simulateContract({
+                    address: walletTools.address,
+                    abi: CommonABI,
+                    functionName: 'voteReport',
+                    args: [post.reportId, true],
+                    account
+                })
+                const tx = await walletTools.walletClient.writeContract(request);
+                utils.toast.success(<>Up-voted successful! <a href={walletTools.block_explorer + '/' + tx}
+                                                               target="_blank" rel="noreferrer">View on
+                    explorer</a></>);
+                close()
             } else {
-                setDownvoteCount(prevCount => prevCount + 1); // Increment downvote count
-                utils.toast.success("Downvoted successfully");
+                // set`DownvoteCount(prevCount => prevCount + 1); // Increment downvote count
+                // utils.to`ast.success("Downvoted successfully");
             }
-
-            utils.toast.success("Verification submitted successfully");
         } catch (error) {
             console.error("Network or other error:", error);
             utils.toast.error("An error occurred while submitting the verification");
@@ -98,20 +123,12 @@ const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
     };
 
     return (
-        <div>
-            <h1 className="text-lg font-semibold">Submit Verification</h1>
-            <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+        <div className={'overflow-y-scroll h-[500px]'}>
+            <h1 className="text-lg font-semibold">
+                Enter the reason for up-voting this post
+            </h1>
+            <form className="mt-2 space-y-4" onSubmit={handleSubmit}>
                 <div className="space-y-1">
-                    <Label htmlFor="verify-title">Title</Label>
-                    <Input
-                        id="verify-title"
-                        className="py-5 rounded-xl border-black"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                </div>
-                <div className="space-y-1">
-                    <Label htmlFor="verify-description">Description</Label>
                     <Textarea
                         id="verify-description"
                         rows={4}
@@ -134,17 +151,21 @@ const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
                         className="bg-[#F8F8FD] text-[#515B6F] outline-dashed border-t-transparent outline-2"
                         variant="outline"
                     >
-                        <Paperclip className="size-5 mr-1 text-[#4A8209]" /> Attach Photos
+                        <Paperclip className="size-5 mr-1 text-[#4A8209]"/> Attach Photos
                     </Button>
                     <Button onClick={() => fileInputRef.current?.click()} type={'button'}
-                        className={'bg-[#F8F8FD] text-[#515B6F] outline-dashed border-t-transparent outline-2'}
-                        variant={'outline'}>
-                        <Paperclip className={'size-5 mr-1 text-[#4A8209]'} /> Attach Videos
+                            className={'bg-[#F8F8FD] text-[#515B6F] outline-dashed border-t-transparent outline-2'}
+                            variant={'outline'}>
+                        <Paperclip className={'size-5 mr-1 text-[#4A8209]'}/> Attach Videos
                     </Button>
+                </div>
+                <div className={'font-semibold text-gray-600'}>
+                    Our AI Agents will be verifying your POV and updates will be shared with you immediately.
                 </div>
                 {fileBase64 && (
                     <p className="text-gray-500">
-                        <b>Image uploaded successfully</b>
+                        <b>Uploaded Image</b>
+                        <img src={fileBase64} className="mt-2 rounded-xl h-56 w-auto" alt="Uploaded Image"/>
                     </p>
                 )}
 
@@ -153,7 +174,7 @@ const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
                         type="submit"
                         className="bg-[#b9ff66] hover:bg-[#a3ff66] border-[#4A8209] border-[1.6px] rounded-full w-full text-black py-6 text-lg font-semibold"
                     >
-                        Submit Verification <ArrowUpRight className="size-8" />
+                        Up-vote <ArrowUpRight className="size-8"/>
                     </Button>
                 </div>
             </form>
@@ -162,11 +183,11 @@ const Verify = ({ submittedText, submittedImageBase64 }: VerifyProps) => {
             <div className="mt-4 flex gap-4">
                 <div className="flex items-center">
                     <span className="mr-2">Upvotes:</span>
-                    <span>{upvoteCount}</span>
+                    <span>{post.upvotes}</span>
                 </div>
                 <div className="flex items-center">
                     <span className="mr-2">Downvotes:</span>
-                    <span>{downvoteCount}</span>
+                    <span>{post.downvotes}</span>
                 </div>
             </div>
         </div>

@@ -42,8 +42,8 @@ const evmNetworks = [
         vanityName: 'Scroll Sepolia Testnet',
     },
     {
-        blockExplorerUrls: ['https://explorer-ui.cardona.zkevm-rpc.com'],
-        chainId: 1442,
+        blockExplorerUrls: ['https://cardona-zkevm.polygonscan.com/'],
+        chainId: 2442,
         chainName: 'Polygon zkEVM Testnet',
         iconUrls: ['https://icons.llamao.fi/icons/chains/rsz_polygon%20zkevm.jpg'],
         name: 'Scroll',
@@ -53,9 +53,9 @@ const evmNetworks = [
             symbol: 'ETH',
             iconUrl: 'https://icons.llamao.fi/icons/chains/rsz_polygon%20zkevm.jpg',
         },
-        networkId: 1442,
+        networkId: 2442,
 
-        rpcUrls: ['https://rpc.public.zkevm-test.net/'],
+        rpcUrls: ['https://rpc.cardona.zkevm-rpc.com'],
         vanityName: 'Polygon zkEVM Testnet',
     },
     {

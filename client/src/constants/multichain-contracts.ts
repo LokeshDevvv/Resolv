@@ -1,35 +1,4 @@
-const PolygonZkEVM = '0x562db143B891D2D05A9e8B72c7DA59077E66A081'
-const ScrollSepolia = '0x13d31A2Eac646a6828b7A118204077Fb790fc0B7'
-const BaseSepolia = '0x82B66862E605d5365128dcA5709Ab598b31D0e34'
-const ZircuitTestnet = '0xB6dd2F403c14bB495B505724b4dA21582a1377aB'
-
 const CommonABI = [
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_reportId",
-                "type": "uint256"
-            }
-        ],
-        "name": "markReportFlagged",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "_reportId",
-                "type": "uint256"
-            }
-        ],
-        "name": "markReportSolved",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
     {
         "anonymous": false,
         "inputs": [
@@ -119,54 +88,68 @@ const CommonABI = [
         "type": "event"
     },
     {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "_details",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_publicLocation",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_mediaCID",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_category",
-                "type": "string"
-            },
+        "inputs": [],
+        "name": "POINTS_DEDUCTION_DOWNVOTE",
+        "outputs": [
             {
                 "internalType": "uint256",
-                "name": "_priority",
+                "name": "",
                 "type": "uint256"
             }
         ],
-        "name": "submitReport",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [
+        "inputs": [],
+        "name": "POINTS_FOR_REPORT",
+        "outputs": [
             {
                 "internalType": "uint256",
-                "name": "_reportId",
+                "name": "",
                 "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "_isUpvote",
-                "type": "bool"
             }
         ],
-        "name": "voteReport",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "POINTS_FOR_SOLVING",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "POINTS_FOR_UPVOTE",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "REPORT_COOLDOWN",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -489,68 +472,29 @@ const CommonABI = [
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "POINTS_DEDUCTION_DOWNVOTE",
-        "outputs": [
+        "inputs": [
             {
                 "internalType": "uint256",
-                "name": "",
+                "name": "_reportId",
                 "type": "uint256"
             }
         ],
-        "stateMutability": "view",
+        "name": "markReportFlagged",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "POINTS_FOR_REPORT",
-        "outputs": [
+        "inputs": [
             {
                 "internalType": "uint256",
-                "name": "",
+                "name": "_reportId",
                 "type": "uint256"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "POINTS_FOR_SOLVING",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "POINTS_FOR_UPVOTE",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "REPORT_COOLDOWN",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
+        "name": "markReportSolved",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -561,6 +505,30 @@ const CommonABI = [
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "reportVotes",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
             }
         ],
         "stateMutability": "view",
@@ -643,25 +611,34 @@ const CommonABI = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                "internalType": "string",
+                "name": "_details",
+                "type": "string"
             },
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "reportVotes",
-        "outputs": [
+                "internalType": "string",
+                "name": "_publicLocation",
+                "type": "string"
+            },
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                "internalType": "string",
+                "name": "_mediaCID",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_category",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_priority",
+                "type": "uint256"
             }
         ],
-        "stateMutability": "view",
+        "name": "submitReport",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -697,7 +674,25 @@ const CommonABI = [
         ],
         "stateMutability": "view",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_reportId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "_isUpvote",
+                "type": "bool"
+            }
+        ],
+        "name": "voteReport",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     }
 ]
 
-export {BaseSepolia, ScrollSepolia, CommonABI, PolygonZkEVM, ZircuitTestnet}
+export {CommonABI}
