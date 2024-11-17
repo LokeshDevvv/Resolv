@@ -32,10 +32,7 @@ const LandingPage = () => {
                         <h1 className={'font-bold text-5xl leading-normal'}>Report Incidents <br/>near you</h1>
                         <div className={'mt-6 space-y-5'}>
                             <p>
-                                Our AI agents will verify it and bckbvjbvjbjnejvjdjcd dnbdkbvd
-                                vjdbvjdkbvkjdbvkdbvkdbvjkdvdvjkdb vdvjdbvjdbvdjbvjdabvjdabvjdabvjdbvmd,v ,dmvdvdabvadmv
-                                damv
-                                davb dm vd,vb da vdvd vkd vd v dvndzknv dn,v ndv ndv
+                                Aware was built with a unique approach to addressing urban issues while maintaining user privacy. We crafted a solution that leverages multiple blockchain protocols, each serving a specific purpose in our ecosystem.
                             </p>
                             <Button onClick={() => {
                                 if (!isLoggedIn) {
