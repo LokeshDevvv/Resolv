@@ -54,17 +54,17 @@ const HelpFeedbackPage = () => {
     };
 
     return (
-        <div className="p-6 max-w-3xl mx-auto bg-white shadow-lg rounded-lg">
+        <div className="p-4 max-w-3xl mx-auto bg-white shadow-lg rounded-lg">
             <h1 className="text-2xl font-semibold text-center text-[#4A8209] mb-6">Help & Feedback</h1>
 
             {/* Help Section */}
-            <div className="mb-8">
+            <div className="mb-2">
                 <h2 className="text-xl font-semibold text-[#4A8209]">How Can We Help You?</h2>
-                <p className="mt-4 text-gray-600">
+                <p className="mt-2 text-gray-600">
                     If you're having any trouble, feel free to browse our frequently asked questions or submit a help request
                     through the form below. Our team is here to assist you!
                 </p>
-                <div className="mt-6 bg-[#f9f9f9] p-4 rounded-md">
+                <div className="mt-2 bg-[#f9f9f9] p-4 rounded-md">
                     <h3 className="font-medium text-[#4A8209]">FAQ</h3>
                     <ul className="mt-2 text-gray-600">
                         <li>- How do I reset my password?</li>
@@ -72,7 +72,7 @@ const HelpFeedbackPage = () => {
                         <li>- Where can I view my previous reports?</li>
                         <li>- How do I contact support?</li>
                     </ul>
-                    <p className="mt-2 text-blue-600">
+                    <p className="mt-1 text-blue-600">
                         For more assistance, please reach out via the form below!
                     </p>
                 </div>
@@ -80,7 +80,7 @@ const HelpFeedbackPage = () => {
 
             {/* Feedback Form */}
             <form onSubmit={handleSubmit}>
-                <div className="space-y-4">
+                <div className="space-y-2">
                     <div className="space-y-1">
                         <Label htmlFor="name">Your Name</Label>
                         <Input
@@ -110,7 +110,6 @@ const HelpFeedbackPage = () => {
                             value={feedback}
                             onChange={(e) => setFeedback(e.target.value)}
                             placeholder="Write your feedback or issue here"
-                            rows={6}
                             className="border-gray-300 resize-none"
                         />
                     </div>
