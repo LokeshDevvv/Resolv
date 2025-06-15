@@ -8,24 +8,21 @@ import { ArrowUpRight, Loader, Paperclip } from "lucide-react";
 import lighthouse from "@lighthouse-web3/sdk";
 import { base64ToFile } from "@/views/app/components/apis.ts";
 import { createPublicClient, createWalletClient, custom, http } from "viem";
-import { scrollSepolia } from "viem/chains";
+import { sapphireTestnet } from "viem/chains";
 import { CommonABI } from "@/constants/multichain-contracts.ts";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes.tsx";
 import imageCompression from "browser-image-compression";
-import {GlobalContext} from "@/contexts/global-context.tsx";
+import { GlobalContext } from "@/contexts/global-context.tsx";
 
 const publicClient = createPublicClient({
-    chain: scrollSepolia,
+    chain: sapphireTestnet,
     transport: http()
-});
-const walletClient = createWalletClient({
-    chain: scrollSepolia,
-    transport: custom(window.ethereum)
 });
 
 const NewReport = () => {
     const { API, utils } = React.useContext(AppContext);
+    const { walletTools } = React.useContext(GlobalContext);
     const fileInputRef = React.useRef<null | HTMLInputElement>(null);
     const [fileBase64, setFileBase64] = React.useState<string | null>(null);
     const [title, setTitle] = React.useState<string>("");
@@ -34,7 +31,6 @@ const NewReport = () => {
     const [lat, setLat] = React.useState<number | null>(null);
     const [long, setLong] = React.useState<number | null>(null);
     const [gpsProcessing, setGpsProcessing] = React.useState<boolean>(false);
-    const {walletTools} = React.useContext(GlobalContext);
     API.components.category.setDisplay(false);
     const navigate = useNavigate();
 
@@ -114,18 +110,12 @@ const NewReport = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const [account] = await walletClient.getAddresses();
-
+        
         // Validate fields before submission
         if (title === '' || description === '' || !fileBase64) {
             utils.toast.error('Please fill all the fields!');
             return;
         }
-
-        const payload = {
-            proof_text: `${title} - ${description}`,
-            proof_image: fileBase64,
-        };
 
         setProcessing(true);
 
@@ -133,39 +123,41 @@ const NewReport = () => {
             // Send the payload to your backend (for content check)
             const response = await fetch("/api/submit-content", {
                 method: "POST",
-                body: new URLSearchParams(payload),
+                body: new URLSearchParams({
+                    proof_text: `${title} - ${description}`,
+                    proof_image: fileBase64,
+                }),
             }).then((ir) => ir.json());
 
             if (response?.isMatching) {
                 if (response?.score >= 80 && response?.severity_score) {
                     const sevScore = Math.round(response.severity_score / 2);
                     const category = response?.category || "Others";
-                    const details = JSON.stringify({ title, description });
-                    const location = JSON.stringify({ lat, long });
+                    
+                    // Save to localStorage
+                    const localReports = JSON.parse(localStorage.getItem('localReports') || '[]');
+                    const newReport = {
+                        title,
+                        description,
+                        fileBase64,
+                        lat: lat ?? 0,
+                        long: long ?? 0,
+                        category,
+                        priority: sevScore,
+                        upvotes: 0,
+                        downvotes: 0,
+                        timestamp: new Date().toISOString(),
+                        details: { title, description },
+                        publicLocation: { 
+                            lat: lat?.toString() ?? "0", 
+                            long: long?.toString() ?? "0" 
+                        }
+                    };
+                    
+                    localReports.push(newReport);
+                    localStorage.setItem('localReports', JSON.stringify(localReports));
 
-                    // Prepare the file for upload
-                    const file = base64ToFile(fileBase64, `${Date.now()}.jpg`);
-                    const uploadResp = await lighthouse.upload([file], '1d7a4666.078c09b786c844d8ab70d56054d33836');
-                    const cID = uploadResp.data.Hash;
-
-                    const { request } = await publicClient.simulateContract({
-                        address: walletTools.address,
-                        abi: CommonABI,
-                        functionName: 'submitReport',
-                        args: [details, location, cID, category, sevScore],
-                        account,
-                    });
-
-                    const tx = await walletClient.writeContract(request);
-
-                    utils.toast.success(
-                        <>
-                            <p>Report submitted successfully!</p>
-                            <p>
-                                View <a target="_blank" className="underline" href={`https://scroll-sepolia.blockscout.com/tx/${tx}`}>Transaction</a>.
-                            </p>
-                        </>
-                    );
+                    utils.toast.success("Report submitted successfully!");
                     navigate(ROUTES.app.reports);
                 } else {
                     utils.toast.error("Content mismatch detected!");
@@ -252,14 +244,21 @@ const NewReport = () => {
                         )}
                     </p>
                 )}
-                <div className="pt-5">
+                <div className="pt-5 flex justify-center gap-4">
                     <Button
                         type="submit"
                         disabled={processing}
-                        className="bg-[#b9ff66] hover:bg-[#a3ff66] border-[#4A8209] border-[1.5px] py-5 rounded-xl w-full text-black font-semibold"
+                        className="bg-[#b9ff66] hover:bg-[#a3ff66] border-[#4A8209] border-[1.5px] py-5 rounded-xl w-[220px] text-black font-semibold"
                     >
-                        {processing && <Loader className="animate-spin mr-2"/>}
+                        {processing ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : null}
                         Submit Report <ArrowUpRight className="size-5 ml-1"/>
+                    </Button>
+                    <Button
+                        type="button"
+                        onClick={() => window.open('https://analysis-page.vercel.app/', '_blank')}
+                        className="bg-[#b9ff66] hover:bg-[#a3ff66] border-[#4A8209] border-[1.5px] py-5 rounded-xl w-[220px] text-black font-semibold"
+                    >
+                        Review Analysis <ArrowUpRight className="size-5 ml-1"/>
                     </Button>
                 </div>
             </form>

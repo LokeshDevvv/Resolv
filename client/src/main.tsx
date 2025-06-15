@@ -20,7 +20,6 @@ const evmNetworks = [
             iconUrl: 'https://chainlist.org/unknown-logo.png',
         },
         networkId: 23295,
-
         rpcUrls: ['https://testnet.sapphire.oasis.io'],
         vanityName: 'Sapphire Testnet',
     },

@@ -2,7 +2,7 @@ import React from "react";
 import {useDynamicContext} from "@dynamic-labs/sdk-react-core";
 import {getWeb3Provider, getSigner,} from '@dynamic-labs/ethers-v6'
 import {createPublicClient, createWalletClient, custom, http} from "viem";
-import {baseSepolia, polygonZkEvmTestnet, scrollSepolia, zircuitTestnet} from "viem/chains";
+import {baseSepolia, polygonZkEvmTestnet, sapphireTestnet, zircuitTestnet} from "viem/chains";
 
 type GlobalContextProps = {
     primaryWallet: any,
@@ -21,7 +21,7 @@ type GlobalContextProps = {
             block_explorer: string,
             address: string
         },
-        534351: {
+        23295: {
             publicClient: typeof createPublicClient,
             walletClient: typeof createWalletClient,
             block_explorer: string,
@@ -73,17 +73,17 @@ const GlobalContextProvider = ({children}: { children: React.ReactNode }) => {
                 block_explorer: 'https://explorer-ui.cardona.zkevm-rpc.com/tx',
                 address: '0x17910372dFfca2332391Ce04Bccc0f3e7959330F'
             },
-            534351: {
+            23295: {
                 publicClient: createPublicClient({
-                    chain: scrollSepolia,
+                    chain: sapphireTestnet,
                     transport: http()
                 }),
                 walletClient: createWalletClient({
-                    chain: scrollSepolia,
+                    chain: sapphireTestnet,
                     transport: custom(window.ethereum)
                 }),
-                block_explorer: 'https://scroll-sepolia.blockscout.com/tx',
-                address: '0x1Eb044C3a05Af2920Fb79e744B673E2b85aE3A48'
+                block_explorer: 'https://explorer.oasis.io/testnet/sapphire/tx',
+                address: '0x05553E4A4276432c21AC54931566872554A62DE5'
             },
             84532: {
                 publicClient: createPublicClient({

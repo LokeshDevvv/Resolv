@@ -175,36 +175,7 @@ const App = () => {
                                     <Button className={'w-full'} variant={'link'}>Help Later</Button>
                                 </div>
                             </div>
-                            <div className={'p-4 border-[2px] rounded-lg'}>
-                                <h1 className={'font-semibold text-base'}>Popular Categories</h1>
-                                <div className={'mt-4 space-y-2'}>
-                                    <div className={'flex items-center justify-between'}>
-                                        <p>JavaScript</p>
-                                        <div
-                                            className={'bg-[#F3F4F6] border-[#E6EBF1] border-2 text-[#6B7280] px-2 font-semibold text-sm rounded-full'}>+99
-                                        </div>
-                                    </div>
-                                    <div className={'flex items-center justify-between'}>
-                                        <p>PHP</p>
-                                        <div
-                                            className={'bg-[#F3F4F6] border-[#E6EBF1] border-2 text-[#6B7280] px-2 font-semibold text-sm rounded-full'}>+99
-                                        </div>
-                                    </div>
-                                    <div className={'flex items-center justify-between'}>
-                                        <p>ReactJs</p>
-                                        <div
-                                            className={'bg-[#F3F4F6] border-[#E6EBF1] border-2 text-[#6B7280] px-2 font-semibold text-sm rounded-full'}>+99
-                                        </div>
-                                    </div>
-                                    <div className={'flex items-center justify-between'}>
-                                        <p>CSS</p>
-                                        <div
-                                            className={'bg-[#F3F4F6] border-[#E6EBF1] border-2 text-[#6B7280] px-2 font-semibold text-sm rounded-full'}>+99
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
                         <div
                             className={cn('md:col-span-7 col-span-12', !components.category.display && 'md:col-span-10 col-span-12', 'order-2 md:order-none')}>
                             <Outlet/>
