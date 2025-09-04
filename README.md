@@ -83,25 +83,8 @@ npm run dev
 - AI-powered content verification
 - Community-driven validation system
 
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit a Pull Request.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👥 Team
-
-- **[Your Name]** - Lead Developer
-- **[Team Member]** - Frontend Developer
-- **[Team Member]** - Backend Developer
-- **[Team Member]** - AI Engineer
-
-## 📞 Contact
-
-For any queries or support, please reach out to us at [your-email@example.com]
 
 ---
 
 Built with ❤️ by the Resolv Team
+
